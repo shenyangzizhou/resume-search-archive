@@ -750,19 +750,17 @@ function rawUrl() {
 }
 
 async function loadRemote() {
-  try {
-    var res = await fetch(rawUrl(), { cache: "no-store" });
-    if (res.status === 404) return null;
-    if (!res.ok) throw new Error("HTTP " + res.status);
-    return await res.json();
-  } catch (rawErr) {
-    var apiRes = await githubApi("/repos/" + GITHUB_OWNER + "/" + GITHUB_REPO + "/contents/" + DATA_FILE + "?ref=" + GITHUB_BRANCH);
-    if (apiRes.status === 404) return null;
-    if (!apiRes.ok) throw rawErr;
+  var apiRes = await githubApi("/repos/" + GITHUB_OWNER + "/" + GITHUB_REPO + "/contents/" + DATA_FILE + "?ref=" + GITHUB_BRANCH);
+  if (apiRes.status === 404) return null;
+  if (apiRes.ok) {
     var obj = await apiRes.json();
     var bin = atob((obj.content || "").replace(/\n/g, ""));
     return JSON.parse(decodeURIComponent(escape(bin)));
   }
+  var res = await fetch(rawUrl(), { cache: "no-store" });
+  if (res.status === 404) return null;
+  if (!res.ok) throw new Error("HTTP " + res.status);
+  return await res.json();
 }
 
 async function getRemoteSha() {
