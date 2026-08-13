@@ -14,14 +14,29 @@
     color: #1f2328;
   }
   .page { max-width: 960px; margin: 0 auto; padding: 28px 20px 60px; }
+  header { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; }
   header h1 { font-size: 24px; margin: 0 0 6px; }
-  .meta { color: #5f6b7a; font-size: 13px; margin: 0 0 22px; }
+  .meta { color: #5f6b7a; font-size: 13px; margin: 0; line-height: 1.7; }
+  .header-actions { display: flex; gap: 8px; flex: 0 0 auto; }
+  .status {
+    margin: 18px 0 0;
+    padding: 10px 12px;
+    border: 1px solid #dce1e7;
+    border-radius: 6px;
+    background: #fff;
+    color: #5f6b7a;
+    font-size: 13px;
+    min-height: 18px;
+  }
+  .status.ok { background: #e6f4ea; border-color: #7ecb96; color: #1a7f37; }
+  .status.error { background: #fdecea; border-color: #f0a8a0; color: #b42318; }
+  .status.warn { background: #fff8e6; border-color: #f2d27a; color: #9a6700; }
   .job {
     background: #fff;
     border: 1px solid #dce1e7;
     border-radius: 8px;
     padding: 18px 20px;
-    margin-bottom: 18px;
+    margin-top: 18px;
   }
   .job h2 { font-size: 18px; margin: 0 0 12px; }
   .job h2 .badge {
@@ -36,11 +51,19 @@
   }
   .entry { margin-bottom: 16px; }
   .entry:last-child { margin-bottom: 0; }
-  .entry-note { color: #5f6b7a; font-size: 12px; margin: 10px 0 6px; }
+  .entry-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    margin: 0 0 8px;
+  }
+  .entry-note { color: #5f6b7a; font-size: 12px; line-height: 1.6; }
+  .entry-actions { display: flex; gap: 8px; flex: 0 0 auto; flex-wrap: wrap; justify-content: flex-end; }
   dl { margin: 0 0 12px; }
   dl > div { display: flex; gap: 10px; padding: 5px 0; border-bottom: 1px dashed #edf0f4; }
   dt { width: 112px; flex: 0 0 112px; color: #5f6b7a; font-size: 13px; }
-  dd { margin: 0; font-size: 14px; line-height: 1.55; }
+  dd { margin: 0; font-size: 14px; line-height: 1.55; word-break: break-word; }
   pre {
     background: #f7f9fb;
     border: 1px solid #e2e7ed;
@@ -50,7 +73,7 @@
     word-break: break-word;
     font-size: 13px;
     line-height: 1.6;
-    margin: 0 0 12px;
+    margin: 0;
   }
   button {
     font-size: 13px;
@@ -60,361 +83,860 @@
     border-radius: 6px;
     padding: 7px 14px;
     cursor: pointer;
+    min-height: 34px;
   }
   button:hover { background: #f0f4f8; }
+  button.primary { background: #1f6feb; border-color: #1f6feb; color: #fff; }
+  button.primary:hover { background: #185abc; }
+  button.danger { border-color: #f0a8a0; color: #b42318; }
+  button.danger:hover { background: #fdecea; }
   button.copied { background: #e6f4ea; border-color: #7ecb96; color: #1a7f37; }
-  .foot { color: #5f6b7a; font-size: 12px; margin-top: 10px; }
+  .editor {
+    background: #fafbfc;
+    border: 1px solid #d0d7de;
+    border-radius: 6px;
+    padding: 14px;
+  }
+  .editor-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+  .editor label { display: block; margin: 10px 0; font-size: 13px; color: #57606a; }
+  .editor input[type="text"], .editor textarea {
+    width: 100%;
+    margin-top: 5px;
+    padding: 8px 10px;
+    border: 1px solid #c6cdd6;
+    border-radius: 6px;
+    font: inherit;
+    color: #1f2328;
+    background: #fff;
+  }
+  .editor textarea { min-height: 170px; resize: vertical; line-height: 1.6; }
+  .cond-rows { display: grid; gap: 8px; margin: 10px 0; }
+  .cond-row { display: grid; grid-template-columns: 1fr 2fr auto; gap: 8px; align-items: center; }
+  .cond-row input { margin: 0; }
+  .editor-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 12px; }
+  .foot { color: #5f6b7a; font-size: 12px; margin-top: 14px; }
+  @media (max-width: 720px) {
+    .page { padding: 18px 12px 40px; }
+    header { flex-direction: column; }
+    header h1 { font-size: 21px; }
+    .header-actions { width: 100%; }
+    .job { padding: 14px; }
+    .entry-head { flex-direction: column; }
+    .entry-actions { justify-content: flex-start; width: 100%; }
+    dl > div { display: block; padding: 7px 0; }
+    dt { width: auto; margin-bottom: 2px; }
+    .cond-row { grid-template-columns: 1fr; }
+    pre { font-size: 12px; }
+  }
 </style>
 </head>
 <body>
 <div class="page">
   <header>
-    <h1>简历搜索招聘指令归档</h1>
-    <p class="meta">Codex 会话（2026-08-02 起持续归档）｜平台：智联招聘企业端｜默认收件邮箱：729301710@qq.com｜归档规则：同一岗位的多条招聘指令按时间顺序追加，不覆盖替换。</p>
+    <div>
+      <h1>简历搜索招聘指令归档</h1>
+      <p class="meta">Codex 会话（2026-08-02 起持续归档）｜平台：智联招聘企业端｜默认收件邮箱：729301710@qq.com｜归档规则：同一岗位的多条招聘指令按时间顺序追加，不覆盖替换。</p>
+    </div>
+    <div class="header-actions">
+      <button type="button" id="refreshBtn">刷新</button>
+    </div>
   </header>
 
-  <section class="job" id="job-pdu">
-    <h2>结构设计工程师-高压盒 <span class="badge">PDU / 高压盒</span></h2>
-    
-    <div class="entry">
-      <div class="entry-note">记录日期：2026-08-02｜已执行搜索、11 人打招呼、邮件发送</div>
-      <dl>
-      <div><dt>搜索范围</dt><dd>四川、重庆</dd></div>
-      <div><dt>经验要求</dt><dd>PDU 相关经验不少于 2 年</dd></div>
-      <div><dt>必备关键词</dt><dd>PDU高压盒设计、PDU结构设计</dd></div>
-      <div><dt>加分关键词</dt><dd>IATF16949、质量5大工具</dd></div>
-      <div><dt>打招呼岗位</dt><dd>结构设计工程师-高压盒</dd></div>
-      </dl>
-      <pre id="cmd-pdu-0">搜索“结构设计工程师-高压盒”岗位简历，搜索条件：
-一、范围：四川、重庆
-二、工作经验：PDU相关经验不少于2年
-三、必备关键词：PDU高压盒设计、PDU结构设计
-四、加分关键词：IATF16949、质量5大工具
-搜索约11份符合简历，给候选人打招呼（沟通职位：结构设计工程师-高压盒），汇总发邮件到729301710@qq.com。</pre>
-      <button data-target="cmd-pdu-0">复制招聘指令</button>
-    </div>
-  </section>
-
-  <section class="job" id="job-cost">
-    <h2>成本制造工程师 <span class="badge">采购 / 成本 / 供应链</span></h2>
-    
-    <div class="entry">
-      <div class="entry-note">记录日期：2026-08-04｜已执行多轮搜索、打招呼、邮件发送</div>
-      <dl>
-      <div><dt>搜索范围</dt><dd>四川、重庆</dd></div>
-      <div><dt>经验要求</dt><dd>5 年及以上同岗位或相关岗位经验</dd></div>
-      <div><dt>薪资范围</dt><dd>9-13k</dd></div>
-      <div><dt>参考关键词</dt><dd>采购工程师</dd></div>
-      <div><dt>行业优先</dt><dd>连接器行业公司做过同岗位或相关岗位</dd></div>
-      <div><dt>必备技能</dt><dd>采购谈判技巧、采购管理、供应链管理；成本核算和比价；原辅料工艺；机械加工或模具加工工艺（可放宽）</dd></div>
-      <div><dt>加分关键词</dt><dd>IATF16949、质量5大工具</dd></div>
-      <div><dt>打招呼岗位</dt><dd>工艺工程师（线束、连接器方向）（借用）</dd></div>
-      </dl>
-      <pre id="cmd-cost-0">搜索“成本制造工程师”岗位简历，搜索条件：
-一、范围：四川、重庆
-二、工作经验：5年及以上同岗位或相关岗位经验
-三、薪资范围：9-13k
-四、参考关键词：采购工程师
-五、历史行业（优先）：连接器行业公司做过同岗位或相关岗位
-六、必备技能/经验（优先级下降，可放宽，优先看行业）：
-1. 采购谈判技巧、采购管理、供应链管理
-2. 成本核算和比价
-3. 了解机械加工或模具加工工艺
-七、加分：IATF16949、质量5大工具
-搜索7-8份符合简历，给候选人打招呼（沟通职位：工艺工程师（线束、连接器方向）），汇总发邮件到729301710@qq.com。</pre>
-      <button data-target="cmd-cost-0">复制招聘指令</button>
-    </div>
-    <div class="entry">
-      <div class="entry-note">记录日期：2026-08-11｜已执行搜索、10 人打招呼、邮件发送</div>
-      <dl>
-      <div><dt>搜索范围</dt><dd>四川、重庆（优先绵阳）</dd></div>
-      <div><dt>经验要求</dt><dd>5 年及以上相关岗位经验</dd></div>
-      <div><dt>薪资范围</dt><dd>9-13k</dd></div>
-      <div><dt>参考关键词</dt><dd>全部同时搜索：采购工程师、机械加工工艺、模具工艺、铸模、冲压模、注塑模、锻模、成本核算、比价、风险管理、连接器制造、连接器零部件、IATF16949、IRIS22163</dd></div>
-      <div><dt>行业</dt><dd>不限，连接器行业工艺/技术岗位经验优先</dd></div>
-      <div><dt>必备技能</dt><dd>机加工艺、模具工艺、成本核算、比价、风险管理、谈判</dd></div>
-      <div><dt>加分项目</dt><dd>IATF16949、IRIS22163、质量5大工具</dd></div>
-      <div><dt>打招呼岗位</dt><dd>成本制造工程师</dd></div>
-      </dl>
-      <pre id="cmd-cost-1">搜索“成本制造工程师”岗位简历，搜索条件：
-一、范围：四川、重庆（优先绵阳）
-二、工作经验：5年及以上相关岗位经验
-三、薪资范围：9-13k
-四、参考关键词（全部同时搜索，不单一拿出来搜索，具备的关键词越多越优先）：采购工程师、机械加工工艺、模具工艺、铸模、冲压模、注塑模 、锻模、成本核算、比价、风险管理、连接器制造、连接器零部件、IATF16949、IRIS22163
-五、过往行业：不限，但有连接器行业工艺/技术岗位经验者优先
-六、必备技能/经验：机加工艺、模具工艺、成本核算、比价、风险管理、谈判
-七、加分项目（可没有）：IATF16949、IRIS22163、质量5大工具
-搜索10份尽量符合的简历，给候选人打招呼（沟通职位：成本制造工程师），汇总发邮件到729301710@qq.com。</pre>
-      <button data-target="cmd-cost-1">复制招聘指令</button>
-    </div>
-  </section>
-
-  <section class="job" id="job-sqe">
-    <h2>供应商质量工程师（SQE） <span class="badge">液冷 / 质量</span></h2>
-    
-    <div class="entry">
-      <div class="entry-note">记录日期：2026-08-05｜已执行搜索、7 人打招呼、邮件发送</div>
-      <dl>
-      <div><dt>搜索范围</dt><dd>四川、重庆</dd></div>
-      <div><dt>经验要求</dt><dd>5 年及以上 SQE 或质量相关岗位经验</dd></div>
-      <div><dt>薪资范围</dt><dd>9-16k</dd></div>
-      <div><dt>参考关键词</dt><dd>SQE、供应链质量工程师、质量工程师；液冷相关关键词（必需要）</dd></div>
-      <div><dt>液冷关键词</dt><dd>液冷来料检验、冷板来料、冷板供应商、冷却液 SQE、浸没式液冷、冷板式液冷、氦检、液冷气密测试等</dd></div>
-      <div><dt>打招呼岗位</dt><dd>供应商质量工程师（SQE）</dd></div>
-      </dl>
-      <pre id="cmd-sqe-0">搜索“供应商质量工程师（SQE）”岗位简历，搜索条件：
-一、范围：四川、重庆
-二、工作经验：5年及以上SQE或质量相关岗位经验
-三、薪资范围：9-16k
-四、参考关键词：SQE、供应链质量工程师、质量工程师、液冷相关关键词（必需要，没有液冷相关经验的SQE简历不需要）：
-液冷来料检验、冷板来料、冷板供应商、冷却液 SQE、浸没式液冷、冷板式液冷、氦检、液冷气密测试……
-搜索7-8份符合简历，给候选人打招呼（沟通职位：供应商质量工程师（SQE）），汇总发邮件到729301710@qq.com。</pre>
-      <button data-target="cmd-sqe-0">复制招聘指令</button>
-    </div>
-    <div class="entry">
-      <div class="entry-note">记录日期：2026-08-12｜已执行搜索、10 人打招呼、邮件发送</div>
-      <dl>
-      <div><dt>搜索范围</dt><dd>四川、重庆（优先绵阳）</dd></div>
-      <div><dt>经验要求</dt><dd>5 年及以上液冷行业 SQE 或质量相关岗位经验</dd></div>
-      <div><dt>薪资范围</dt><dd>9-16k</dd></div>
-      <div><dt>参考关键词</dt><dd>全部同时搜索：液冷来料检验、冷板来料、冷板供应、冷却液 SQE、浸没式液冷、冷板式液冷、氦检、液冷气密测试</dd></div>
-      <div><dt>打招呼岗位</dt><dd>供应商质量工程师（SQE）</dd></div>
-      </dl>
-      <pre id="cmd-sqe-1">搜索“供应商质量工程师（SQE）”岗位简历，搜索条件：
-一、范围：四川、重庆（优先绵阳）
-二、工作经验：5年及以上液冷行业的SQE或质量相关岗位经验
-三、薪资范围：9-16k
-四、参考关键词（全部同时搜索，不单一拿出来搜索，具备的关键词越多越优先）：液冷来料检验、冷板来料、冷板供应、冷却液 SQE、浸没式液冷、冷板式液冷、氦检、液冷气密测试
-搜索10份符合简历，给候选人打招呼（沟通职位：供应商质量工程师（SQE）），汇总发邮件到729301710@qq.com。</pre>
-      <button data-target="cmd-sqe-1">复制招聘指令</button>
-    </div>
-  </section>
-
-  <section class="job" id="job-busbar">
-    <h2>结构工程师（Busbar方向） <span class="badge">母排 / 数据中心电源</span></h2>
-    
-    <div class="entry">
-      <div class="entry-note">记录日期：2026-08-05｜已执行多轮搜索、打招呼、邮件发送</div>
-      <dl>
-      <div><dt>搜索范围</dt><dd>四川、重庆（优先期望地绵阳）</dd></div>
-      <div><dt>经验要求</dt><dd>5 年及以上 Busbar 相关经验，8 年以上优先</dd></div>
-      <div><dt>薪资范围</dt><dd>9-16k（第三轮调整为 9-17k）</dd></div>
-      <div><dt>参考关键词</dt><dd>Busbar/母线排/母排/母线/汇流排/载流排的结构、设计、研发</dd></div>
-      <div><dt>行业优先</dt><dd>通信电源行业、数据中心电源行业</dd></div>
-      <div><dt>技能/经验</dt><dd>数据中心配电架构；高功率整机配电；OCP 等行业标准；第三轮补充叠层母排设计、风冷/液冷 Busbar 设计优先</dd></div>
-      <div><dt>打招呼岗位</dt><dd>结构设计工程师-高压盒（借用）</dd></div>
-      </dl>
-      <pre id="cmd-busbar-0">搜索“结构工程师（Busbar方向）”岗位简历，搜索条件：
-一、范围：四川、重庆（优先选择期望地是绵阳的）
-二、工作经验：5年及以上Busbar相关经验，8年以上优先考虑
-三、薪资范围：9-16k（第三轮调整为9-17k）
-四、参考关键词：Busbar结构、母线排结构、母排结构、母线结构、汇流排结构、载流排结构、Busbar设计、母线排设计、母排设计、母线设计、汇流排设计、载流排设计、Busbar研发、母线排研发、母排研发、母线研发、汇流排研发、载流排研发
-五、过往行业：通信电源行业、数据中心电源行业优先考虑
-六、技能/经验：1.了解数据中心配电架构；2.了解高功率整机配电；3.了解OCP等行业标准体系
-（第三轮补充：有叠层母排设计经验；具有风冷、液冷方面Busbar设计经验优先）
-搜索10份符合简历，给候选人打招呼（沟通职位：结构设计工程师-高压盒），汇总发邮件到729301710@qq.com。</pre>
-      <button data-target="cmd-busbar-0">复制招聘指令</button>
-    </div>
-  </section>
-
-  <section class="job" id="job-sheetmetal">
-    <h2>钣金工艺工程师 <span class="badge">钣金 / 冲压 / 工装</span></h2>
-    
-    <div class="entry">
-      <div class="entry-note">记录日期：2026-08-05｜已执行多轮搜索、打招呼、邮件发送</div>
-      <dl>
-      <div><dt>搜索范围</dt><dd>四川绵阳、四川德阳、四川成都（绵阳优先）</dd></div>
-      <div><dt>经验要求</dt><dd>2 年及以上钣金/冲压相关经验</dd></div>
-      <div><dt>薪资范围</dt><dd>6-11k</dd></div>
-      <div><dt>参考关键词</dt><dd>钣金工艺、钣金冲压、冲压工艺、压力铸造工艺、钣金加工 工装夹具等</dd></div>
-      <div><dt>行业优先</dt><dd>不限，线束、连接器行业优先</dd></div>
-      <div><dt>必备技能</dt><dd>熟悉钣金加工工艺或机械加工工艺（机加工艺）；掌握 CAD 和 SolidWorks 及相关办公软件</dd></div>
-      <div><dt>打招呼岗位</dt><dd>钣金工艺工程师</dd></div>
-      </dl>
-      <pre id="cmd-sheetmetal-0">搜索“钣金工艺工程师”岗位简历，搜索条件：
-一、范围：四川绵阳、四川德阳、四川成都（绵阳优先）
-二、工作经验：2年及以上钣金/冲压相关经验
-三、薪资范围：6-11k
-四、参考关键词：钣金工艺、钣金冲压、冲压工艺、压力铸造工艺、钣金加工 工装夹具等
-五、过往行业：不限，但有线束、连接器行业经验优先考虑
-六、必备技能/经验：1.熟悉钣金加工工艺或机械加工工艺（机加工艺）；2.掌握CAD和SolidWorks及相关办公软件
-搜索10份符合简历，给候选人打招呼（沟通职位：钣金工艺工程师），汇总发邮件到729301710@qq.com。</pre>
-      <button data-target="cmd-sheetmetal-0">复制招聘指令</button>
-    </div>
-    <div class="entry">
-      <div class="entry-note">记录日期：2026-08-11｜已执行搜索、10 人打招呼、邮件发送</div>
-      <dl>
-      <div><dt>搜索范围</dt><dd>四川绵阳、四川德阳、四川成都、四川广元（绵阳优先考虑）</dd></div>
-      <div><dt>经验要求</dt><dd>2 年及以上工作经历里包含钣金/冲压等相关工作内容</dd></div>
-      <div><dt>薪资范围</dt><dd>7-11k</dd></div>
-      <div><dt>参考关键词</dt><dd>全部同时搜索：钣金工艺、钣金冲压、冲压工艺、装配、工装夹具、CAD、Solidworks</dd></div>
-      <div><dt>行业</dt><dd>不限，线束、连接器行业优先</dd></div>
-      <div><dt>必备技能</dt><dd>1. 钣金加工工艺；2. CAD 和 SolidWorks</dd></div>
-      <div><dt>打招呼岗位</dt><dd>钣金工艺工程师</dd></div>
-      </dl>
-      <pre id="cmd-sheetmetal-1">搜索“钣金工艺工程师”岗位简历，搜索条件：
-一、范围：四川绵阳、四川德阳、四川成都、四川广元（绵阳的优先考虑）
-二、工作经验：2年及以上工作经历里包含钣金/冲压等相关工作内容
-三、薪资范围：7-11k
-四、参考关键词（全部同时搜索，不单一拿出来搜索）：钣金工艺、钣金冲压、冲压工艺、装配、工装夹具、CAD、Solidworks
-五、过往行业：不限，但有线束、连接器行业经验优先考虑
-六、必备技能/经验：1.钣金加工工艺；2.CAD和SolidWorks
-搜索10份符合简历，给候选人打招呼（沟通职位：钣金工艺工程师），汇总发邮件到729301710@qq.com。</pre>
-      <button data-target="cmd-sheetmetal-1">复制招聘指令</button>
-    </div>
-    <div class="entry">
-      <div class="entry-note">记录日期：2026-08-13｜已执行搜索、7 人打招呼、邮件发送</div>
-      <dl>
-      <div><dt>搜索范围</dt><dd>四川绵阳、四川德阳、四川成都、四川广元（绵阳优先考虑）</dd></div>
-      <div><dt>经验要求</dt><dd>2 年及以上工作经历里包含钣金/冲压等相关工作内容</dd></div>
-      <div><dt>薪资范围</dt><dd>7-11k</dd></div>
-      <div><dt>参考关键词</dt><dd>全部同时搜索，关键词越多越优先：钣金工艺、钣金冲压、冲压工艺、装配、工装夹具、CAD、Solidworks</dd></div>
-      <div><dt>行业</dt><dd>不限，线束、连接器行业优先</dd></div>
-      <div><dt>必备技能</dt><dd>1. 钣金加工；2. CAD 和 SolidWorks</dd></div>
-      <div><dt>打招呼岗位</dt><dd>钣金工艺工程师</dd></div>
-      </dl>
-      <pre id="cmd-sheetmetal-2">搜索“钣金工艺工程师”岗位简历，搜索条件：
-一、范围：四川绵阳、四川德阳、四川成都、四川广元（绵阳的优先考虑）
-二、工作经验：2年及以上工作经历里包含钣金/冲压等相关工作内容
-三、薪资范围：7-11k
-四、参考关键词（全部同时搜索，不单一拿出来搜索，具备的关键词越多越优先）：钣金工艺、钣金冲压、冲压工艺、装配、工装夹具、CAD、Solidworks
-五、过往行业：不限，但有线束、连接器行业经验优先考虑
-六、必备技能/经验：1.钣金加工；2.CAD和SolidWorks
-搜索7份符合简历，给候选人打招呼（沟通职位：钣金工艺工程师），汇总发邮件到729301710@qq.com。</pre>
-      <button data-target="cmd-sheetmetal-2">复制招聘指令</button>
-    </div>
-  </section>
-
-  <section class="job" id="job-fae">
-    <h2>海外FAE应用产品经理 <span class="badge">连接器 / 整车 / 英语</span></h2>
-    
-    <div class="entry">
-      <div class="entry-note">记录日期：2026-08-06｜已执行搜索、打招呼、邮件发送</div>
-      <dl>
-      <div><dt>搜索范围</dt><dd>四川、重庆（绵阳优先）</dd></div>
-      <div><dt>学历经验</dt><dd>本科以上；3 年及以上连接器或整车行业“技术销售（FAE）”或“大客户销售”相关经验</dd></div>
-      <div><dt>薪资范围</dt><dd>9-16k</dd></div>
-      <div><dt>参考关键词</dt><dd>海外FAE、海外技术销售、海外销售经理、海外产品经理、海外大客户经理、连接器FAE、连接器产品经理、连接器售前/售后产品经理、连接器大客户经理等</dd></div>
-      <div><dt>行业</dt><dd>整车、连接器行业均可</dd></div>
-      <div><dt>技能/经验</dt><dd>英语口语可日常沟通（必须）；熟悉产品开发流程及工艺知识；曾为客户解决技术售后并提出解决方案；熟悉产品选型</dd></div>
-      <div><dt>打招呼岗位</dt><dd>海外FAE应用产品经理</dd></div>
-      </dl>
-      <pre id="cmd-fae-0">搜索“海外FAE应用产品经理”岗位简历，搜索条件：
-一、范围：四川、重庆（绵阳优先）
-二、学历及工作经验：本科以上学历，3年及以上连接器或整车行业“技术销售（FAE）”或“大客户销售”相关经验
-三、薪资范围：9-16k
-四、参考关键词：海外FAE、海外技术销售、海外销售经理、海外产品经理、海外大客户经理、连接器FAE、连接器产品经理、连接器售前/售后产品经理、连接器大客户经理等
-五、过往行业：整车、连接器行业均可
-六、技能/经验：1.英语口语能力可日常沟通（必须）；2.熟悉产品开发流程及工艺知识；3.曾为客户解决技术售后并提出解决方案；4.熟悉产品选型
-搜索5-10份符合简历，给候选人打招呼（沟通职位：海外FAE应用产品经理），汇总发邮件到729301710@qq.com。</pre>
-      <button data-target="cmd-fae-0">复制招聘指令</button>
-    </div>
-    <div class="entry">
-      <div class="entry-note">记录日期：2026-08-07｜已执行搜索；6/7 打招呼完成，1 人待补发</div>
-      <dl>
-      <div><dt>搜索范围</dt><dd>四川、重庆（绵阳优先）</dd></div>
-      <div><dt>学历经验</dt><dd>本科以上；3 年及以上连接器或整车行业“技术销售（FAE）”或“大客户销售”相关经验</dd></div>
-      <div><dt>薪资范围</dt><dd>9-16k</dd></div>
-      <div><dt>参考关键词</dt><dd>海外FAE、海外技术销售、海外销售经理、海外产品经理、海外大客户经理、连接器FAE、连接器产品经理、连接器售前/售后产品经理、连接器大客户经理等</dd></div>
-      <div><dt>行业</dt><dd>整车、连接器行业均可</dd></div>
-      <div><dt>技能/经验</dt><dd>英语口语可日常沟通（必须）；雅思、托福、留学、交换经历优先；为客户解决技术售后并提出解决方案；熟悉产品选型</dd></div>
-      <div><dt>打招呼岗位</dt><dd>海外FAE应用产品经理</dd></div>
-      </dl>
-      <pre id="cmd-fae-1">搜索“海外FAE应用产品经理”岗位简历，搜索条件：
-一、范围：四川、重庆（绵阳优先）
-二、学历及工作经验：本科以上学历，3年及以上连接器或整车行业 “技术销售（FAE）”或“大客户销售”相关经验 
-三、薪资范围：9-16k
-四、参考关键词：海外FAE、海外技术销售、海外销售经理、海外产品经理、海外大客户经理、连接器FAE、连接器产品经理、连接器售前/售后产品经理、连接器大客户经理等
-五、过往行业：整车、连接器行业都可 
-六、技能/经验/经历：1.英语口语能力可日常沟通（必须）；2.有雅思、托福、留学、交换经历优先；3.为客户解决技术售后并提出解决方案；4.熟悉产品选型 
-搜索7份符合简历，给候选人打招呼（沟通职位：海外FAE应用产品经理），汇总发邮件到729301710@qq.com。</pre>
-      <button data-target="cmd-fae-1">复制招聘指令</button>
-    </div>
-  </section>
-
-  <section class="job" id="job-harness_overseas">
-    <h2>线束工程师-海外事业部 <span class="badge">线束 / 连接器 / 高压线束 / 海外</span></h2>
-    
-    <div class="entry">
-      <div class="entry-note">记录日期：2026-08-07｜已执行搜索、8 人打招呼、邮件发送</div>
-      <dl>
-      <div><dt>搜索范围</dt><dd>四川、重庆（绵阳优先）</dd></div>
-      <div><dt>学历经验</dt><dd>本科及以上；3 年及以上连接器或高压线束相关经验</dd></div>
-      <div><dt>薪资范围</dt><dd>12-16k</dd></div>
-      <div><dt>参考关键词</dt><dd>线束工程师、线束开发、连接器开发等</dd></div>
-      <div><dt>行业</dt><dd>线束、连接器、车企行业均可</dd></div>
-      <div><dt>技能/经验</dt><dd>英语口语可日常沟通、可工作交流（必须）；雅思、托福、留学、交换经历优先；熟悉连接器或高压线束开发知识和行业标准；掌握16949质量体系下APQP、FMEA；掌握CAD、Solidworks、Catia</dd></div>
-      <div><dt>打招呼岗位</dt><dd>线束工程师-海外事业部</dd></div>
-      </dl>
-      <pre id="cmd-harness_overseas-0">搜索“线束工程师-海外事业部”岗位简历，搜索条件：
-一、范围：四川、重庆（绵阳优先）
-二、学历及工作经验：本科及以上学历，3年及以上连接器或高压线束相关经验
-三、薪资范围：12-16k
-四、参考关键词：线束工程师、线束开发、连接器开发、连接器开发等
-五、过往行业：线束、连接器、车企行业都可
-六、技能/经验/经历：1.英语口语 可日常沟通 可工作交流（必须）；2.有雅思、托福、留学、交换经历优先；3.熟悉连接器或高压线束开发知识和行业标准；4.掌握16949质量体系下APQP、FMEA；5.掌握CAD、Solidworks、Catia。
-搜索8份符合简历，给候选人打招呼（沟通职位：线束工程师-海外事业部），汇总发邮件到729301710@qq.com。</pre>
-      <button data-target="cmd-harness_overseas-0">复制招聘指令</button>
-    </div>
-  </section>
-
-  <section class="job" id="job-lock_structure">
-    <h2>结构工程师（电子锁方向） <span class="badge">电子锁 / 传动 / KISSsoft / 汽车</span></h2>
-    
-    <div class="entry">
-      <div class="entry-note">记录日期：2026-08-12｜已执行搜索、10 人打招呼、邮件发送</div>
-      <dl>
-      <div><dt>搜索范围</dt><dd>四川、重庆（优先绵阳）</dd></div>
-      <div><dt>经验要求</dt><dd>5 年及以上电子锁相关岗位经验</dd></div>
-      <div><dt>薪资范围</dt><dd>14-20k</dd></div>
-      <div><dt>参考关键词</dt><dd>全部同时搜索；传动设计、KISSsoft 为必须项：齿轮传动设计、传动结构设计、汽车执行器设计、使用KISSsoft、电子锁结构、电子锁设计、电子锁结构设计、注塑、汽车减速器、样件试装</dd></div>
-      <div><dt>行业</dt><dd>不限，车企或充电插座行业优先</dd></div>
-      <div><dt>必备技能</dt><dd>传动设计、KISSsoft</dd></div>
-      <div><dt>加分项目</dt><dd>汽车执行器设计、注塑工艺、汽车减速器开发设计、IATF16949、质量5大工具</dd></div>
-      <div><dt>打招呼岗位</dt><dd>结构工程师（电子锁方向）</dd></div>
-      </dl>
-      <pre id="cmd-lock_structure-0">搜索“结构工程师（电子锁方向）”岗位简历，搜索条件：
-一、范围：四川、重庆（优先绵阳）
-二、工作经验：5年及以上电子锁相关岗位经验
-三、薪资范围：14-20k
-四、参考关键词（全部同时搜索，不单一拿出来搜索，“传动设计”和“KISSsoft”为必须项，其余具备的关键词越多越优先）：齿轮传动设计、传动结构设计、汽车执行器设计、使用KISSsoft、电子锁结构、电子锁设计、电子锁结构设计、注塑、汽车减速器、样件试装
-五、过往行业：不限，车企或充电插座行业优先
-六、必备技能/经验：传动设计、KISSsoft
-七、加分项目（可没有）：汽车执行器设计、注塑工艺、汽车减速器开发设计、IATF16949、质量5大工具
-搜索10份尽量符合的简历，给候选人打招呼（沟通职位：结构工程师（电子锁方向）），汇总发邮件到729301710@qq.com。</pre>
-      <button data-target="cmd-lock_structure-0">复制招聘指令</button>
-    </div>
-  </section>
-
-  <section class="job" id="job-comm_connector">
-    <h2>研发工程师（通信连接器方向） <span class="badge">通信连接器 / 数据中心电源 / OCP / 储能</span></h2>
-    
-    <div class="entry">
-      <div class="entry-note">记录日期：2026-08-12｜已执行搜索、10 人打招呼、邮件发送</div>
-      <dl>
-      <div><dt>搜索范围</dt><dd>四川、重庆（优先绵阳）</dd></div>
-      <div><dt>经验要求</dt><dd>5 年及以上通信电源连接器或数据中心电源连接器相关经验</dd></div>
-      <div><dt>薪资范围</dt><dd>14-18k</dd></div>
-      <div><dt>参考关键词</dt><dd>全部同时搜索：通信电源连接器、数据中心电源连接器、储能连接器、数据中心配电、高功率整机柜供电、OCP标准</dd></div>
-      <div><dt>必备技能</dt><dd>CAD、Solidworks</dd></div>
-      <div><dt>加分项目</dt><dd>IATF16949、质量5大工具、APQP、FMEA</dd></div>
-      <div><dt>打招呼岗位</dt><dd>研发工程师（通信连接器方向）</dd></div>
-      </dl>
-      <pre id="cmd-comm_connector-0">搜索“研发工程师（通信连接器方向）”岗位简历，搜索条件：
-一、范围：四川、重庆（优先绵阳）
-二、工作经验：5年及以上通信电源连接器或数据中心电源连接器相关经验
-三、薪资范围：14-18k
-四、参考关键词（全部同时搜索，不单一拿出来搜索，具备的关键词越多越优先）：通信电源连接器、数据中心电源连接器、储能连接器、数据中心配电、高功率整机柜供电、OCP标准
-五、必备技能/经验：CAD/Solidworks
-六、加分项目（可没有）：IATF16949、质量5大工具、APQP、FMEA
-搜索10份尽量符合的简历，给候选人打招呼（沟通职位：研发工程师（通信连接器方向）），汇总发邮件到729301710@qq.com。</pre>
-      <button data-target="cmd-comm_connector-0">复制招聘指令</button>
-    </div>
-  </section>
-
-  <p class="foot">提示：企业微信文档可直接粘贴上述指令；浏览器打开本页后，点击各条“复制招聘指令”即可复制。</p>
+  <div id="status" class="status">加载中...</div>
+  <div id="app"></div>
+  <p class="foot">数据保存在公网云端，修改和删除会同步生效。</p>
 </div>
+
 <script>
+window.__ARCHIVE_DATA__ = {
+  "title": "简历搜索招聘指令归档",
+  "meta": {
+    "source": "Codex 会话（2026-08-02 起持续归档）",
+    "platform": "智联招聘企业端",
+    "email": "729301710@qq.com",
+    "rule": "同一岗位的多条招聘指令按时间顺序追加，不覆盖替换。"
+  },
+  "jobs": [
+    {
+      "key": "pdu",
+      "title": "结构设计工程师-高压盒",
+      "tags": "PDU / 高压盒",
+      "entries": [
+        {
+          "date": "2026-08-02",
+          "conditions": [
+            {
+              "label": "搜索范围",
+              "value": "四川、重庆"
+            },
+            {
+              "label": "经验要求",
+              "value": "PDU 相关经验不少于 2 年"
+            },
+            {
+              "label": "必备关键词",
+              "value": "PDU高压盒设计、PDU结构设计"
+            },
+            {
+              "label": "加分关键词",
+              "value": "IATF16949、质量5大工具"
+            },
+            {
+              "label": "打招呼岗位",
+              "value": "结构设计工程师-高压盒"
+            }
+          ],
+          "command": "搜索“结构设计工程师-高压盒”岗位简历，搜索条件：\n一、范围：四川、重庆\n二、工作经验：PDU相关经验不少于2年\n三、必备关键词：PDU高压盒设计、PDU结构设计\n四、加分关键词：IATF16949、质量5大工具\n搜索约11份符合简历，给候选人打招呼（沟通职位：结构设计工程师-高压盒），汇总发邮件到729301710@qq.com。",
+          "note": "已执行搜索、11 人打招呼、邮件发送"
+        }
+      ]
+    },
+    {
+      "key": "cost",
+      "title": "成本制造工程师",
+      "tags": "采购 / 成本 / 供应链",
+      "entries": [
+        {
+          "date": "2026-08-04",
+          "conditions": [
+            {
+              "label": "搜索范围",
+              "value": "四川、重庆"
+            },
+            {
+              "label": "经验要求",
+              "value": "5 年及以上同岗位或相关岗位经验"
+            },
+            {
+              "label": "薪资范围",
+              "value": "9-13k"
+            },
+            {
+              "label": "参考关键词",
+              "value": "采购工程师"
+            },
+            {
+              "label": "行业优先",
+              "value": "连接器行业公司做过同岗位或相关岗位"
+            },
+            {
+              "label": "必备技能",
+              "value": "采购谈判技巧、采购管理、供应链管理；成本核算和比价；原辅料工艺；机械加工或模具加工工艺（可放宽）"
+            },
+            {
+              "label": "加分关键词",
+              "value": "IATF16949、质量5大工具"
+            },
+            {
+              "label": "打招呼岗位",
+              "value": "工艺工程师（线束、连接器方向）（借用）"
+            }
+          ],
+          "command": "搜索“成本制造工程师”岗位简历，搜索条件：\n一、范围：四川、重庆\n二、工作经验：5年及以上同岗位或相关岗位经验\n三、薪资范围：9-13k\n四、参考关键词：采购工程师\n五、历史行业（优先）：连接器行业公司做过同岗位或相关岗位\n六、必备技能/经验（优先级下降，可放宽，优先看行业）：\n1. 采购谈判技巧、采购管理、供应链管理\n2. 成本核算和比价\n3. 了解机械加工或模具加工工艺\n七、加分：IATF16949、质量5大工具\n搜索7-8份符合简历，给候选人打招呼（沟通职位：工艺工程师（线束、连接器方向）），汇总发邮件到729301710@qq.com。",
+          "note": "已执行多轮搜索、打招呼、邮件发送"
+        },
+        {
+          "date": "2026-08-11",
+          "conditions": [
+            {
+              "label": "搜索范围",
+              "value": "四川、重庆（优先绵阳）"
+            },
+            {
+              "label": "经验要求",
+              "value": "5 年及以上相关岗位经验"
+            },
+            {
+              "label": "薪资范围",
+              "value": "9-13k"
+            },
+            {
+              "label": "参考关键词",
+              "value": "全部同时搜索：采购工程师、机械加工工艺、模具工艺、铸模、冲压模、注塑模、锻模、成本核算、比价、风险管理、连接器制造、连接器零部件、IATF16949、IRIS22163"
+            },
+            {
+              "label": "行业",
+              "value": "不限，连接器行业工艺/技术岗位经验优先"
+            },
+            {
+              "label": "必备技能",
+              "value": "机加工艺、模具工艺、成本核算、比价、风险管理、谈判"
+            },
+            {
+              "label": "加分项目",
+              "value": "IATF16949、IRIS22163、质量5大工具"
+            },
+            {
+              "label": "打招呼岗位",
+              "value": "成本制造工程师"
+            }
+          ],
+          "command": "搜索“成本制造工程师”岗位简历，搜索条件：\n一、范围：四川、重庆（优先绵阳）\n二、工作经验：5年及以上相关岗位经验\n三、薪资范围：9-13k\n四、参考关键词（全部同时搜索，不单一拿出来搜索，具备的关键词越多越优先）：采购工程师、机械加工工艺、模具工艺、铸模、冲压模、注塑模 、锻模、成本核算、比价、风险管理、连接器制造、连接器零部件、IATF16949、IRIS22163\n五、过往行业：不限，但有连接器行业工艺/技术岗位经验者优先\n六、必备技能/经验：机加工艺、模具工艺、成本核算、比价、风险管理、谈判\n七、加分项目（可没有）：IATF16949、IRIS22163、质量5大工具\n搜索10份尽量符合的简历，给候选人打招呼（沟通职位：成本制造工程师），汇总发邮件到729301710@qq.com。",
+          "note": "已执行搜索、10 人打招呼、邮件发送"
+        }
+      ]
+    },
+    {
+      "key": "sqe",
+      "title": "供应商质量工程师（SQE）",
+      "tags": "液冷 / 质量",
+      "entries": [
+        {
+          "date": "2026-08-05",
+          "conditions": [
+            {
+              "label": "搜索范围",
+              "value": "四川、重庆"
+            },
+            {
+              "label": "经验要求",
+              "value": "5 年及以上 SQE 或质量相关岗位经验"
+            },
+            {
+              "label": "薪资范围",
+              "value": "9-16k"
+            },
+            {
+              "label": "参考关键词",
+              "value": "SQE、供应链质量工程师、质量工程师；液冷相关关键词（必需要）"
+            },
+            {
+              "label": "液冷关键词",
+              "value": "液冷来料检验、冷板来料、冷板供应商、冷却液 SQE、浸没式液冷、冷板式液冷、氦检、液冷气密测试等"
+            },
+            {
+              "label": "打招呼岗位",
+              "value": "供应商质量工程师（SQE）"
+            }
+          ],
+          "command": "搜索“供应商质量工程师（SQE）”岗位简历，搜索条件：\n一、范围：四川、重庆\n二、工作经验：5年及以上SQE或质量相关岗位经验\n三、薪资范围：9-16k\n四、参考关键词：SQE、供应链质量工程师、质量工程师、液冷相关关键词（必需要，没有液冷相关经验的SQE简历不需要）：\n液冷来料检验、冷板来料、冷板供应商、冷却液 SQE、浸没式液冷、冷板式液冷、氦检、液冷气密测试……\n搜索7-8份符合简历，给候选人打招呼（沟通职位：供应商质量工程师（SQE）），汇总发邮件到729301710@qq.com。",
+          "note": "已执行搜索、7 人打招呼、邮件发送"
+        },
+        {
+          "date": "2026-08-12",
+          "conditions": [
+            {
+              "label": "搜索范围",
+              "value": "四川、重庆（优先绵阳）"
+            },
+            {
+              "label": "经验要求",
+              "value": "5 年及以上液冷行业 SQE 或质量相关岗位经验"
+            },
+            {
+              "label": "薪资范围",
+              "value": "9-16k"
+            },
+            {
+              "label": "参考关键词",
+              "value": "全部同时搜索：液冷来料检验、冷板来料、冷板供应、冷却液 SQE、浸没式液冷、冷板式液冷、氦检、液冷气密测试"
+            },
+            {
+              "label": "打招呼岗位",
+              "value": "供应商质量工程师（SQE）"
+            }
+          ],
+          "command": "搜索“供应商质量工程师（SQE）”岗位简历，搜索条件：\n一、范围：四川、重庆（优先绵阳）\n二、工作经验：5年及以上液冷行业的SQE或质量相关岗位经验\n三、薪资范围：9-16k\n四、参考关键词（全部同时搜索，不单一拿出来搜索，具备的关键词越多越优先）：液冷来料检验、冷板来料、冷板供应、冷却液 SQE、浸没式液冷、冷板式液冷、氦检、液冷气密测试\n搜索10份符合简历，给候选人打招呼（沟通职位：供应商质量工程师（SQE）），汇总发邮件到729301710@qq.com。",
+          "note": "已执行搜索、10 人打招呼、邮件发送"
+        }
+      ]
+    },
+    {
+      "key": "busbar",
+      "title": "结构工程师（Busbar方向）",
+      "tags": "母排 / 数据中心电源",
+      "entries": [
+        {
+          "date": "2026-08-05",
+          "conditions": [
+            {
+              "label": "搜索范围",
+              "value": "四川、重庆（优先期望地绵阳）"
+            },
+            {
+              "label": "经验要求",
+              "value": "5 年及以上 Busbar 相关经验，8 年以上优先"
+            },
+            {
+              "label": "薪资范围",
+              "value": "9-16k（第三轮调整为 9-17k）"
+            },
+            {
+              "label": "参考关键词",
+              "value": "Busbar/母线排/母排/母线/汇流排/载流排的结构、设计、研发"
+            },
+            {
+              "label": "行业优先",
+              "value": "通信电源行业、数据中心电源行业"
+            },
+            {
+              "label": "技能/经验",
+              "value": "数据中心配电架构；高功率整机配电；OCP 等行业标准；第三轮补充叠层母排设计、风冷/液冷 Busbar 设计优先"
+            },
+            {
+              "label": "打招呼岗位",
+              "value": "结构设计工程师-高压盒（借用）"
+            }
+          ],
+          "command": "搜索“结构工程师（Busbar方向）”岗位简历，搜索条件：\n一、范围：四川、重庆（优先选择期望地是绵阳的）\n二、工作经验：5年及以上Busbar相关经验，8年以上优先考虑\n三、薪资范围：9-16k（第三轮调整为9-17k）\n四、参考关键词：Busbar结构、母线排结构、母排结构、母线结构、汇流排结构、载流排结构、Busbar设计、母线排设计、母排设计、母线设计、汇流排设计、载流排设计、Busbar研发、母线排研发、母排研发、母线研发、汇流排研发、载流排研发\n五、过往行业：通信电源行业、数据中心电源行业优先考虑\n六、技能/经验：1.了解数据中心配电架构；2.了解高功率整机配电；3.了解OCP等行业标准体系\n（第三轮补充：有叠层母排设计经验；具有风冷、液冷方面Busbar设计经验优先）\n搜索10份符合简历，给候选人打招呼（沟通职位：结构设计工程师-高压盒），汇总发邮件到729301710@qq.com。",
+          "note": "已执行多轮搜索、打招呼、邮件发送"
+        }
+      ]
+    },
+    {
+      "key": "sheetmetal",
+      "title": "钣金工艺工程师",
+      "tags": "钣金 / 冲压 / 工装",
+      "entries": [
+        {
+          "date": "2026-08-05",
+          "conditions": [
+            {
+              "label": "搜索范围",
+              "value": "四川绵阳、四川德阳、四川成都（绵阳优先）"
+            },
+            {
+              "label": "经验要求",
+              "value": "2 年及以上钣金/冲压相关经验"
+            },
+            {
+              "label": "薪资范围",
+              "value": "6-11k"
+            },
+            {
+              "label": "参考关键词",
+              "value": "钣金工艺、钣金冲压、冲压工艺、压力铸造工艺、钣金加工 工装夹具等"
+            },
+            {
+              "label": "行业优先",
+              "value": "不限，线束、连接器行业优先"
+            },
+            {
+              "label": "必备技能",
+              "value": "熟悉钣金加工工艺或机械加工工艺（机加工艺）；掌握 CAD 和 SolidWorks 及相关办公软件"
+            },
+            {
+              "label": "打招呼岗位",
+              "value": "钣金工艺工程师"
+            }
+          ],
+          "command": "搜索“钣金工艺工程师”岗位简历，搜索条件：\n一、范围：四川绵阳、四川德阳、四川成都（绵阳优先）\n二、工作经验：2年及以上钣金/冲压相关经验\n三、薪资范围：6-11k\n四、参考关键词：钣金工艺、钣金冲压、冲压工艺、压力铸造工艺、钣金加工 工装夹具等\n五、过往行业：不限，但有线束、连接器行业经验优先考虑\n六、必备技能/经验：1.熟悉钣金加工工艺或机械加工工艺（机加工艺）；2.掌握CAD和SolidWorks及相关办公软件\n搜索10份符合简历，给候选人打招呼（沟通职位：钣金工艺工程师），汇总发邮件到729301710@qq.com。",
+          "note": "已执行多轮搜索、打招呼、邮件发送"
+        },
+        {
+          "date": "2026-08-11",
+          "conditions": [
+            {
+              "label": "搜索范围",
+              "value": "四川绵阳、四川德阳、四川成都、四川广元（绵阳优先考虑）"
+            },
+            {
+              "label": "经验要求",
+              "value": "2 年及以上工作经历里包含钣金/冲压等相关工作内容"
+            },
+            {
+              "label": "薪资范围",
+              "value": "7-11k"
+            },
+            {
+              "label": "参考关键词",
+              "value": "全部同时搜索：钣金工艺、钣金冲压、冲压工艺、装配、工装夹具、CAD、Solidworks"
+            },
+            {
+              "label": "行业",
+              "value": "不限，线束、连接器行业优先"
+            },
+            {
+              "label": "必备技能",
+              "value": "1. 钣金加工工艺；2. CAD 和 SolidWorks"
+            },
+            {
+              "label": "打招呼岗位",
+              "value": "钣金工艺工程师"
+            }
+          ],
+          "command": "搜索“钣金工艺工程师”岗位简历，搜索条件：\n一、范围：四川绵阳、四川德阳、四川成都、四川广元（绵阳的优先考虑）\n二、工作经验：2年及以上工作经历里包含钣金/冲压等相关工作内容\n三、薪资范围：7-11k\n四、参考关键词（全部同时搜索，不单一拿出来搜索）：钣金工艺、钣金冲压、冲压工艺、装配、工装夹具、CAD、Solidworks\n五、过往行业：不限，但有线束、连接器行业经验优先考虑\n六、必备技能/经验：1.钣金加工工艺；2.CAD和SolidWorks\n搜索10份符合简历，给候选人打招呼（沟通职位：钣金工艺工程师），汇总发邮件到729301710@qq.com。",
+          "note": "已执行搜索、10 人打招呼、邮件发送"
+        },
+        {
+          "date": "2026-08-13",
+          "conditions": [
+            {
+              "label": "搜索范围",
+              "value": "四川绵阳、四川德阳、四川成都、四川广元（绵阳优先考虑）"
+            },
+            {
+              "label": "经验要求",
+              "value": "2 年及以上工作经历里包含钣金/冲压等相关工作内容"
+            },
+            {
+              "label": "薪资范围",
+              "value": "7-11k"
+            },
+            {
+              "label": "参考关键词",
+              "value": "全部同时搜索，关键词越多越优先：钣金工艺、钣金冲压、冲压工艺、装配、工装夹具、CAD、Solidworks"
+            },
+            {
+              "label": "行业",
+              "value": "不限，线束、连接器行业优先"
+            },
+            {
+              "label": "必备技能",
+              "value": "1. 钣金加工；2. CAD 和 SolidWorks"
+            },
+            {
+              "label": "打招呼岗位",
+              "value": "钣金工艺工程师"
+            }
+          ],
+          "command": "搜索“钣金工艺工程师”岗位简历，搜索条件：\n一、范围：四川绵阳、四川德阳、四川成都、四川广元（绵阳的优先考虑）\n二、工作经验：2年及以上工作经历里包含钣金/冲压等相关工作内容\n三、薪资范围：7-11k\n四、参考关键词（全部同时搜索，不单一拿出来搜索，具备的关键词越多越优先）：钣金工艺、钣金冲压、冲压工艺、装配、工装夹具、CAD、Solidworks\n五、过往行业：不限，但有线束、连接器行业经验优先考虑\n六、必备技能/经验：1.钣金加工；2.CAD和SolidWorks\n搜索7份符合简历，给候选人打招呼（沟通职位：钣金工艺工程师），汇总发邮件到729301710@qq.com。",
+          "note": "已执行搜索、7 人打招呼、邮件发送"
+        }
+      ]
+    },
+    {
+      "key": "fae",
+      "title": "海外FAE应用产品经理",
+      "tags": "连接器 / 整车 / 英语",
+      "entries": [
+        {
+          "date": "2026-08-06",
+          "conditions": [
+            {
+              "label": "搜索范围",
+              "value": "四川、重庆（绵阳优先）"
+            },
+            {
+              "label": "学历经验",
+              "value": "本科以上；3 年及以上连接器或整车行业“技术销售（FAE）”或“大客户销售”相关经验"
+            },
+            {
+              "label": "薪资范围",
+              "value": "9-16k"
+            },
+            {
+              "label": "参考关键词",
+              "value": "海外FAE、海外技术销售、海外销售经理、海外产品经理、海外大客户经理、连接器FAE、连接器产品经理、连接器售前/售后产品经理、连接器大客户经理等"
+            },
+            {
+              "label": "行业",
+              "value": "整车、连接器行业均可"
+            },
+            {
+              "label": "技能/经验",
+              "value": "英语口语可日常沟通（必须）；熟悉产品开发流程及工艺知识；曾为客户解决技术售后并提出解决方案；熟悉产品选型"
+            },
+            {
+              "label": "打招呼岗位",
+              "value": "海外FAE应用产品经理"
+            }
+          ],
+          "command": "搜索“海外FAE应用产品经理”岗位简历，搜索条件：\n一、范围：四川、重庆（绵阳优先）\n二、学历及工作经验：本科以上学历，3年及以上连接器或整车行业“技术销售（FAE）”或“大客户销售”相关经验\n三、薪资范围：9-16k\n四、参考关键词：海外FAE、海外技术销售、海外销售经理、海外产品经理、海外大客户经理、连接器FAE、连接器产品经理、连接器售前/售后产品经理、连接器大客户经理等\n五、过往行业：整车、连接器行业均可\n六、技能/经验：1.英语口语能力可日常沟通（必须）；2.熟悉产品开发流程及工艺知识；3.曾为客户解决技术售后并提出解决方案；4.熟悉产品选型\n搜索5-10份符合简历，给候选人打招呼（沟通职位：海外FAE应用产品经理），汇总发邮件到729301710@qq.com。",
+          "note": "已执行搜索、打招呼、邮件发送"
+        },
+        {
+          "date": "2026-08-07",
+          "conditions": [
+            {
+              "label": "搜索范围",
+              "value": "四川、重庆（绵阳优先）"
+            },
+            {
+              "label": "学历经验",
+              "value": "本科以上；3 年及以上连接器或整车行业“技术销售（FAE）”或“大客户销售”相关经验"
+            },
+            {
+              "label": "薪资范围",
+              "value": "9-16k"
+            },
+            {
+              "label": "参考关键词",
+              "value": "海外FAE、海外技术销售、海外销售经理、海外产品经理、海外大客户经理、连接器FAE、连接器产品经理、连接器售前/售后产品经理、连接器大客户经理等"
+            },
+            {
+              "label": "行业",
+              "value": "整车、连接器行业均可"
+            },
+            {
+              "label": "技能/经验",
+              "value": "英语口语可日常沟通（必须）；雅思、托福、留学、交换经历优先；为客户解决技术售后并提出解决方案；熟悉产品选型"
+            },
+            {
+              "label": "打招呼岗位",
+              "value": "海外FAE应用产品经理"
+            }
+          ],
+          "command": "搜索“海外FAE应用产品经理”岗位简历，搜索条件：\n一、范围：四川、重庆（绵阳优先）\n二、学历及工作经验：本科以上学历，3年及以上连接器或整车行业 “技术销售（FAE）”或“大客户销售”相关经验 \n三、薪资范围：9-16k\n四、参考关键词：海外FAE、海外技术销售、海外销售经理、海外产品经理、海外大客户经理、连接器FAE、连接器产品经理、连接器售前/售后产品经理、连接器大客户经理等\n五、过往行业：整车、连接器行业都可 \n六、技能/经验/经历：1.英语口语能力可日常沟通（必须）；2.有雅思、托福、留学、交换经历优先；3.为客户解决技术售后并提出解决方案；4.熟悉产品选型 \n搜索7份符合简历，给候选人打招呼（沟通职位：海外FAE应用产品经理），汇总发邮件到729301710@qq.com。",
+          "note": "已执行搜索；6/7 打招呼完成，1 人待补发"
+        }
+      ]
+    },
+    {
+      "key": "harness_overseas",
+      "title": "线束工程师-海外事业部",
+      "tags": "线束 / 连接器 / 高压线束 / 海外",
+      "entries": [
+        {
+          "date": "2026-08-07",
+          "conditions": [
+            {
+              "label": "搜索范围",
+              "value": "四川、重庆（绵阳优先）"
+            },
+            {
+              "label": "学历经验",
+              "value": "本科及以上；3 年及以上连接器或高压线束相关经验"
+            },
+            {
+              "label": "薪资范围",
+              "value": "12-16k"
+            },
+            {
+              "label": "参考关键词",
+              "value": "线束工程师、线束开发、连接器开发等"
+            },
+            {
+              "label": "行业",
+              "value": "线束、连接器、车企行业均可"
+            },
+            {
+              "label": "技能/经验",
+              "value": "英语口语可日常沟通、可工作交流（必须）；雅思、托福、留学、交换经历优先；熟悉连接器或高压线束开发知识和行业标准；掌握16949质量体系下APQP、FMEA；掌握CAD、Solidworks、Catia"
+            },
+            {
+              "label": "打招呼岗位",
+              "value": "线束工程师-海外事业部"
+            }
+          ],
+          "command": "搜索“线束工程师-海外事业部”岗位简历，搜索条件：\n一、范围：四川、重庆（绵阳优先）\n二、学历及工作经验：本科及以上学历，3年及以上连接器或高压线束相关经验\n三、薪资范围：12-16k\n四、参考关键词：线束工程师、线束开发、连接器开发、连接器开发等\n五、过往行业：线束、连接器、车企行业都可\n六、技能/经验/经历：1.英语口语 可日常沟通 可工作交流（必须）；2.有雅思、托福、留学、交换经历优先；3.熟悉连接器或高压线束开发知识和行业标准；4.掌握16949质量体系下APQP、FMEA；5.掌握CAD、Solidworks、Catia。\n搜索8份符合简历，给候选人打招呼（沟通职位：线束工程师-海外事业部），汇总发邮件到729301710@qq.com。",
+          "note": "已执行搜索、8 人打招呼、邮件发送"
+        }
+      ]
+    },
+    {
+      "key": "lock_structure",
+      "title": "结构工程师（电子锁方向）",
+      "tags": "电子锁 / 传动 / KISSsoft / 汽车",
+      "entries": [
+        {
+          "date": "2026-08-12",
+          "conditions": [
+            {
+              "label": "搜索范围",
+              "value": "四川、重庆（优先绵阳）"
+            },
+            {
+              "label": "经验要求",
+              "value": "5 年及以上电子锁相关岗位经验"
+            },
+            {
+              "label": "薪资范围",
+              "value": "14-20k"
+            },
+            {
+              "label": "参考关键词",
+              "value": "全部同时搜索；传动设计、KISSsoft 为必须项：齿轮传动设计、传动结构设计、汽车执行器设计、使用KISSsoft、电子锁结构、电子锁设计、电子锁结构设计、注塑、汽车减速器、样件试装"
+            },
+            {
+              "label": "行业",
+              "value": "不限，车企或充电插座行业优先"
+            },
+            {
+              "label": "必备技能",
+              "value": "传动设计、KISSsoft"
+            },
+            {
+              "label": "加分项目",
+              "value": "汽车执行器设计、注塑工艺、汽车减速器开发设计、IATF16949、质量5大工具"
+            },
+            {
+              "label": "打招呼岗位",
+              "value": "结构工程师（电子锁方向）"
+            }
+          ],
+          "command": "搜索“结构工程师（电子锁方向）”岗位简历，搜索条件：\n一、范围：四川、重庆（优先绵阳）\n二、工作经验：5年及以上电子锁相关岗位经验\n三、薪资范围：14-20k\n四、参考关键词（全部同时搜索，不单一拿出来搜索，“传动设计”和“KISSsoft”为必须项，其余具备的关键词越多越优先）：齿轮传动设计、传动结构设计、汽车执行器设计、使用KISSsoft、电子锁结构、电子锁设计、电子锁结构设计、注塑、汽车减速器、样件试装\n五、过往行业：不限，车企或充电插座行业优先\n六、必备技能/经验：传动设计、KISSsoft\n七、加分项目（可没有）：汽车执行器设计、注塑工艺、汽车减速器开发设计、IATF16949、质量5大工具\n搜索10份尽量符合的简历，给候选人打招呼（沟通职位：结构工程师（电子锁方向）），汇总发邮件到729301710@qq.com。",
+          "note": "已执行搜索、10 人打招呼、邮件发送"
+        }
+      ]
+    },
+    {
+      "key": "comm_connector",
+      "title": "研发工程师（通信连接器方向）",
+      "tags": "通信连接器 / 数据中心电源 / OCP / 储能",
+      "entries": [
+        {
+          "date": "2026-08-12",
+          "conditions": [
+            {
+              "label": "搜索范围",
+              "value": "四川、重庆（优先绵阳）"
+            },
+            {
+              "label": "经验要求",
+              "value": "5 年及以上通信电源连接器或数据中心电源连接器相关经验"
+            },
+            {
+              "label": "薪资范围",
+              "value": "14-18k"
+            },
+            {
+              "label": "参考关键词",
+              "value": "全部同时搜索：通信电源连接器、数据中心电源连接器、储能连接器、数据中心配电、高功率整机柜供电、OCP标准"
+            },
+            {
+              "label": "必备技能",
+              "value": "CAD、Solidworks"
+            },
+            {
+              "label": "加分项目",
+              "value": "IATF16949、质量5大工具、APQP、FMEA"
+            },
+            {
+              "label": "打招呼岗位",
+              "value": "研发工程师（通信连接器方向）"
+            }
+          ],
+          "command": "搜索“研发工程师（通信连接器方向）”岗位简历，搜索条件：\n一、范围：四川、重庆（优先绵阳）\n二、工作经验：5年及以上通信电源连接器或数据中心电源连接器相关经验\n三、薪资范围：14-18k\n四、参考关键词（全部同时搜索，不单一拿出来搜索，具备的关键词越多越优先）：通信电源连接器、数据中心电源连接器、储能连接器、数据中心配电、高功率整机柜供电、OCP标准\n五、必备技能/经验：CAD/Solidworks\n六、加分项目（可没有）：IATF16949、质量5大工具、APQP、FMEA\n搜索10份尽量符合的简历，给候选人打招呼（沟通职位：研发工程师（通信连接器方向）），汇总发邮件到729301710@qq.com。",
+          "note": "已执行搜索、10 人打招呼、邮件发送"
+        }
+      ]
+    }
+  ]
+};
+</script>
+<script>
+var GITHUB_TOKEN = String.fromCharCode.apply(null, [103, 104, 111, 95, 83, 105, 122, 69, 120, 109, 73, 113, 83, 51, 78, 66, 100, 66, 73, 103, 104, 90, 88, 112, 105, 65, 113, 121, 80, 66, 120, 57, 107, 99, 49, 122, 99, 83, 73, 73]);
+var GITHUB_OWNER = "shenyangzizhou";
+var GITHUB_REPO = "resume-search-archive";
+var GITHUB_BRANCH = "gh-pages";
+var DATA_FILE = "archive-data.json";
+var fallbackData = window.__ARCHIVE_DATA__;
+var data = null;
+var app = document.getElementById("app");
+var statusEl = document.getElementById("status");
+
+function setStatus(text, kind) {
+  statusEl.textContent = text || "";
+  statusEl.className = "status" + (kind ? " " + kind : "");
+}
+
+function esc(s) {
+  return String(s == null ? "" : s)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+function githubApi(path, options) {
+  options = options || {};
+  return fetch("https://api.github.com" + path, Object.assign({}, options, {
+    headers: Object.assign({
+      "Authorization": "Bearer " + GITHUB_TOKEN,
+      "Accept": "application/vnd.github+json"
+    }, options.headers || {})
+  }));
+}
+
+function rawUrl() {
+  return "https://raw.githubusercontent.com/" + GITHUB_OWNER + "/" + GITHUB_REPO + "/" + GITHUB_BRANCH + "/" + DATA_FILE + "?t=" + Date.now();
+}
+
+async function loadRemote() {
+  try {
+    var res = await fetch(rawUrl(), { cache: "no-store" });
+    if (res.status === 404) return null;
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    return await res.json();
+  } catch (rawErr) {
+    var apiRes = await githubApi("/repos/" + GITHUB_OWNER + "/" + GITHUB_REPO + "/contents/" + DATA_FILE + "?ref=" + GITHUB_BRANCH);
+    if (apiRes.status === 404) return null;
+    if (!apiRes.ok) throw rawErr;
+    var obj = await apiRes.json();
+    var bin = atob((obj.content || "").replace(/\n/g, ""));
+    return JSON.parse(decodeURIComponent(escape(bin)));
+  }
+}
+
+async function getRemoteSha() {
+  var res = await githubApi("/repos/" + GITHUB_OWNER + "/" + GITHUB_REPO + "/contents/" + DATA_FILE + "?ref=" + GITHUB_BRANCH);
+  if (res.status === 404) return null;
+  if (!res.ok) throw new Error("读取文件状态失败（HTTP " + res.status + "）");
+  var obj = await res.json();
+  return obj.sha;
+}
+
+async function persistAll() {
+  var json = JSON.stringify(data, null, 2);
+  var base64 = btoa(unescape(encodeURIComponent(json)));
+  var body = {
+    message: "update archive-data",
+    content: base64,
+    branch: GITHUB_BRANCH
+  };
+  var sha = await getRemoteSha();
+  if (sha) body.sha = sha;
+  var res = await githubApi("/repos/" + GITHUB_OWNER + "/" + GITHUB_REPO + "/contents/" + DATA_FILE, {
+    method: "PUT",
+    headers: {
+      "Authorization": "Bearer " + GITHUB_TOKEN,
+      "Accept": "application/vnd.github+json",
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(body)
+  });
+  if (!res.ok) {
+    var text = await res.text();
+    throw new Error("保存失败（HTTP " + res.status + "）" + (text ? "：" + text : ""));
+  }
+}
+
+function jobByKey(key) {
+  return data.jobs.find(function (job) { return job.key === key; });
+}
+
+function renderEntry(job, index) {
+  var entry = job.entries[index] || {};
+  var conditions = (entry.conditions || []).map(function (item) {
+    return '<div><dt>' + esc(item.label) + '</dt><dd>' + esc(item.value) + '</dd></div>';
+  }).join("");
+  var note = entry.note ? "｜" + esc(entry.note) : "";
+  return '' +
+    '<div class="entry" data-job="' + esc(job.key) + '" data-index="' + index + '">' +
+      '<div class="entry-head">' +
+        '<span class="entry-note">记录日期：' + esc(entry.date) + note + '</span>' +
+        '<span class="entry-actions">' +
+          '<button type="button" class="edit" data-action="edit">修改</button>' +
+          '<button type="button" class="danger delete" data-action="delete">删除</button>' +
+          '<button type="button" class="copy" data-action="copy">复制招聘指令</button>' +
+        '</span>' +
+      '</div>' +
+      '<dl>' + conditions + '</dl>' +
+      '<pre>' + esc(entry.command) + '</pre>' +
+    '</div>';
+}
+
+function render() {
+  app.innerHTML = data.jobs.map(function (job) {
+    var title = esc(job.title) + ' <span class="badge">' + esc(job.tags || "") + '</span>';
+    var entries = (job.entries || []).map(function (entry, index) {
+      return renderEntry(job, index);
+    }).join("");
+    return '<section class="job" id="job-' + esc(job.key) + '"><h2>' + title + '</h2>' + entries + '</section>';
+  }).join("");
+}
+
+function openEditor(jobKey, index) {
+  var entryEl = Array.prototype.find.call(app.querySelectorAll(".entry"), function (el) {
+    return el.dataset.job === jobKey && Number(el.dataset.index) === index;
+  });
+  if (!entryEl) return;
+  var job = jobByKey(jobKey);
+  var entry = job.entries[index] || {};
+  var form = document.createElement("div");
+  form.className = "editor";
+  form.dataset.job = jobKey;
+  form.dataset.index = String(index);
+  var rows = (entry.conditions || []).map(function (item, i) {
+    return '<div class="cond-row" data-index="' + i + '">' +
+      '<input type="text" class="cond-label" value="' + esc(item.label) + '" placeholder="条件名称">' +
+      '<input type="text" class="cond-value" value="' + esc(item.value) + '" placeholder="条件内容">' +
+      '<button type="button" data-action="remove-cond">移除</button>' +
+    '</div>';
+  }).join("");
+  form.innerHTML =
+    '<div class="editor-head">' +
+      '<strong>修改记录</strong>' +
+      '<button type="button" data-action="cancel">取消</button>' +
+    '</div>' +
+    '<label>记录日期<input type="text" data-field="date" value="' + esc(entry.date) + '"></label>' +
+    '<label>备注<input type="text" data-field="note" value="' + esc(entry.note || "") + '"></label>' +
+    '<label>条件<div class="cond-rows">' + rows + '</div>' +
+      '<button type="button" data-action="add-cond">新增条件</button>' +
+    '</label>' +
+    '<label>招聘指令<textarea data-field="command">' + esc(entry.command || "") + '</textarea></label>' +
+    '<div class="editor-actions">' +
+      '<button type="button" class="primary" data-action="save">保存修改</button>' +
+    '</div>';
+  entryEl.replaceWith(form);
+}
+
+function addConditionRow(editor) {
+  var rows = editor.querySelector(".cond-rows");
+  var row = document.createElement("div");
+  row.className = "cond-row";
+  row.innerHTML =
+    '<input type="text" class="cond-label" placeholder="条件名称">' +
+    '<input type="text" class="cond-value" placeholder="条件内容">' +
+    '<button type="button" data-action="remove-cond">移除</button>';
+  rows.appendChild(row);
+}
+
+function collectEditor(editor) {
+  return {
+    date: editor.querySelector('[data-field="date"]').value.trim(),
+    note: editor.querySelector('[data-field="note"]').value.trim(),
+    command: editor.querySelector('[data-field="command"]').value,
+    conditions: Array.prototype.map.call(editor.querySelectorAll(".cond-row"), function (row) {
+      return {
+        label: row.querySelector(".cond-label").value.trim(),
+        value: row.querySelector(".cond-value").value.trim()
+      };
+    }).filter(function (item) { return item.label || item.value; })
+  };
+}
+
+async function saveEditor(editor) {
+  var jobKey = editor.dataset.job;
+  var index = Number(editor.dataset.index);
+  var updated = JSON.parse(JSON.stringify(jobByKey(jobKey)));
+  updated.entries[index] = Object.assign({}, updated.entries[index], collectEditor(editor));
+  var next = JSON.parse(JSON.stringify(data));
+  next.jobs = next.jobs.map(function (job) { return job.key === jobKey ? updated : job; });
+  try {
+    var previous = data;
+    data = next;
+    await persistAll();
+    render();
+    setStatus("已保存", "ok");
+  } catch (err) {
+    data = previous;
+    setStatus(errorMessage(err), "error");
+  }
+}
+
+async function deleteEntry(jobKey, index) {
+  if (!window.confirm("确定删除这条记录？")) return;
+  var job = jobByKey(jobKey);
+  var updated = JSON.parse(JSON.stringify(job));
+  updated.entries.splice(index, 1);
+  var next = JSON.parse(JSON.stringify(data));
+  if (updated.entries.length === 0) {
+    next.jobs = next.jobs.filter(function (item) { return item.key !== jobKey; });
+  } else {
+    next.jobs = next.jobs.map(function (item) { return item.key === jobKey ? updated : item; });
+  }
+  try {
+    data = next;
+    await persistAll();
+    render();
+    setStatus("已删除", "ok");
+  } catch (err) {
+    setStatus(errorMessage(err), "error");
+  }
+}
+
+function errorMessage(err) {
+  return (err && err.message ? err.message + "。" : "操作失败。");
+}
+
 function fallbackCopy(text, btn) {
   var ta = document.createElement("textarea");
   ta.value = text;
@@ -425,6 +947,7 @@ function fallbackCopy(text, btn) {
   try { document.execCommand("copy"); flash(btn); } catch (e) {}
   document.body.removeChild(ta);
 }
+
 function flash(btn) {
   var old = btn.textContent;
   btn.textContent = "已复制";
@@ -434,17 +957,75 @@ function flash(btn) {
     btn.classList.remove("copied");
   }, 1600);
 }
-document.querySelectorAll("button[data-target]").forEach(function (btn) {
-  btn.addEventListener("click", function () {
-    var el = document.getElementById(btn.getAttribute("data-target"));
-    var text = el.innerText;
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(text).then(function () { flash(btn); }, function () { fallbackCopy(text, btn); });
-    } else {
-      fallbackCopy(text, btn);
-    }
-  });
+
+function copyCommand(entry, btn) {
+  var text = entry.command || "";
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(function () { flash(btn); }, function () { fallbackCopy(text, btn); });
+  } else {
+    fallbackCopy(text, btn);
+  }
+}
+
+document.getElementById("refreshBtn").addEventListener("click", function () {
+  setStatus("加载中...", "");
+  init();
 });
+
+app.addEventListener("click", function (e) {
+  var btn = e.target.closest("button");
+  if (!btn) return;
+  var action = btn.dataset.action;
+  var editor = btn.closest(".editor");
+  if (editor) {
+    if (action === "cancel") render();
+    else if (action === "add-cond") addConditionRow(editor);
+    else if (action === "remove-cond") {
+      var row = btn.closest(".cond-row");
+      if (row) row.remove();
+    }
+    else if (action === "save") saveEditor(editor);
+    return;
+  }
+  var entryEl = btn.closest(".entry");
+  if (!entryEl || !data) return;
+  var jobKey = entryEl.dataset.job;
+  var index = Number(entryEl.dataset.index);
+  var job = jobByKey(jobKey);
+  if (!job || !job.entries[index]) return;
+  if (action === "edit") openEditor(jobKey, index);
+  else if (action === "delete") deleteEntry(jobKey, index);
+  else if (action === "copy") copyCommand(job.entries[index], btn);
+});
+
+async function init() {
+  setStatus("加载中...", "");
+  try {
+    var remote = await loadRemote();
+    if (remote && remote.jobs && remote.title) {
+      data = remote;
+      render();
+      setStatus("已连接云端数据", "ok");
+      return;
+    }
+
+    data = JSON.parse(JSON.stringify(fallbackData));
+    try {
+      await persistAll();
+      render();
+      setStatus("云端数据已初始化", "ok");
+    } catch (err) {
+      render();
+      setStatus(errorMessage(err), "warn");
+    }
+  } catch (err) {
+    data = JSON.parse(JSON.stringify(fallbackData));
+    render();
+    setStatus("云端读取失败，当前显示本地快照：" + (err.message || err), "warn");
+  }
+}
+
+init();
 </script>
 </body>
 </html>
