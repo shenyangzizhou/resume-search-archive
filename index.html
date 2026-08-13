@@ -738,6 +738,7 @@ function esc(s) {
 function githubApi(path, options) {
   options = options || {};
   return fetch("https://api.github.com" + path, Object.assign({}, options, {
+    cache: "no-store",
     headers: Object.assign({
       "Authorization": "Bearer " + GITHUB_TOKEN,
       "Accept": "application/vnd.github+json"
@@ -750,7 +751,7 @@ function rawUrl() {
 }
 
 async function loadRemote() {
-  var apiRes = await githubApi("/repos/" + GITHUB_OWNER + "/" + GITHUB_REPO + "/contents/" + DATA_FILE + "?ref=" + GITHUB_BRANCH);
+  var apiRes = await githubApi("/repos/" + GITHUB_OWNER + "/" + GITHUB_REPO + "/contents/" + DATA_FILE + "?ref=" + GITHUB_BRANCH + "&t=" + Date.now());
   if (apiRes.status === 404) return null;
   if (apiRes.ok) {
     var obj = await apiRes.json();
@@ -764,7 +765,7 @@ async function loadRemote() {
 }
 
 async function getRemoteSha() {
-  var res = await githubApi("/repos/" + GITHUB_OWNER + "/" + GITHUB_REPO + "/contents/" + DATA_FILE + "?ref=" + GITHUB_BRANCH);
+  var res = await githubApi("/repos/" + GITHUB_OWNER + "/" + GITHUB_REPO + "/contents/" + DATA_FILE + "?ref=" + GITHUB_BRANCH + "&t=" + Date.now());
   if (res.status === 404) return null;
   if (!res.ok) throw new Error("读取文件状态失败（HTTP " + res.status + "）");
   var obj = await res.json();
