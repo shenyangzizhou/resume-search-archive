@@ -551,6 +551,19 @@
           "note": "已执行搜索、10 人打招呼、邮件发送"
         }
       ]
+    },
+    {
+      "key": "_test_temp",
+      "title": "TEMP",
+      "tags": "TEST",
+      "entries": [
+        {
+          "date": "2026-08-13",
+          "note": "DELETE_ME",
+          "command": "TEMP_CMD",
+          "conditions": []
+        }
+      ]
     }
   ]
 }
