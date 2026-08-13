@@ -722,6 +722,21 @@ var data = null;
 var app = document.getElementById("app");
 var statusEl = document.getElementById("status");
 
+function saveSnapshot() {
+  try {
+    localStorage.setItem("archive-snapshot", JSON.stringify({ savedAt: Date.now(), data: data }));
+  } catch (e) {}
+}
+
+function loadSnapshot() {
+  try {
+    var raw = localStorage.getItem("archive-snapshot");
+    return raw ? JSON.parse(raw) : null;
+  } catch (e) {
+    return null;
+  }
+}
+
 function setStatus(text, kind) {
   statusEl.textContent = text || "";
   statusEl.className = "status" + (kind ? " " + kind : "");
@@ -746,12 +761,19 @@ function githubApi(path, options) {
   }));
 }
 
+function readApi(path) {
+  return fetch("https://api.github.com" + path + "&t=" + Date.now(), {
+    cache: "no-store",
+    headers: { "Accept": "application/vnd.github+json" }
+  });
+}
+
 function rawUrl() {
   return "https://raw.githubusercontent.com/" + GITHUB_OWNER + "/" + GITHUB_REPO + "/" + GITHUB_BRANCH + "/" + DATA_FILE + "?t=" + Date.now();
 }
 
 async function loadRemote() {
-  var apiRes = await githubApi("/repos/" + GITHUB_OWNER + "/" + GITHUB_REPO + "/contents/" + DATA_FILE + "?ref=" + GITHUB_BRANCH + "&t=" + Date.now());
+  var apiRes = await readApi("/repos/" + GITHUB_OWNER + "/" + GITHUB_REPO + "/contents/" + DATA_FILE + "?ref=" + GITHUB_BRANCH);
   if (apiRes.status === 404) return null;
   if (apiRes.ok) {
     var obj = await apiRes.json();
@@ -765,7 +787,7 @@ async function loadRemote() {
 }
 
 async function getRemoteSha() {
-  var res = await githubApi("/repos/" + GITHUB_OWNER + "/" + GITHUB_REPO + "/contents/" + DATA_FILE + "?ref=" + GITHUB_BRANCH + "&t=" + Date.now());
+  var res = await readApi("/repos/" + GITHUB_OWNER + "/" + GITHUB_REPO + "/contents/" + DATA_FILE + "?ref=" + GITHUB_BRANCH);
   if (res.status === 404) return null;
   if (!res.ok) throw new Error("读取文件状态失败（HTTP " + res.status + "）");
   var obj = await res.json();
@@ -773,6 +795,7 @@ async function getRemoteSha() {
 }
 
 async function persistAll() {
+  data._savedAt = Date.now();
   var json = JSON.stringify(data, null, 2);
   var base64 = btoa(unescape(encodeURIComponent(json)));
   var body = {
@@ -795,6 +818,7 @@ async function persistAll() {
     var text = await res.text();
     throw new Error("保存失败（HTTP " + res.status + "）" + (text ? "：" + text : ""));
   }
+  saveSnapshot();
 }
 
 function jobByKey(key) {
@@ -1002,7 +1026,14 @@ async function init() {
   try {
     var remote = await loadRemote();
     if (remote && remote.jobs && remote.title) {
-      data = remote;
+      var snapshot = loadSnapshot();
+      var remoteTime = remote._savedAt || 0;
+      var localTime = snapshot ? snapshot.savedAt : 0;
+      if (localTime > remoteTime && Date.now() - localTime < 3600000) {
+        data = snapshot.data;
+      } else {
+        data = remote;
+      }
       render();
       setStatus("已连接云端数据", "ok");
       return;
